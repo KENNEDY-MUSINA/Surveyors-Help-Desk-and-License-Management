@@ -1,0 +1,38 @@
+<?php
+extract($_POST);
+include_once ("query.php");
+
+$sql     = mysqli_query($conn, "SELECT * FROM dash_board_reg WHERE email = '$email'");
+$num_row = mysqli_fetch_row($sql)[0];
+if ($num_row) {
+
+	echo "Email is Already taken";
+	exit;
+
+} else {
+
+	if (isset($_POST["submit"])) {
+
+		$firstname        = $_POST['firstname'];
+		$lastname         = $_POST['lastname'];
+		$email            = $_POST['email'];
+		$password         = md5($_POST['password']);
+		$confirm_password = md5($_POST['confirm_password']);
+
+		$sql = "INSERT INTO user (firstname,lastname,email,password, confirm_password)
+                VALUES('$firstname','$lastname','$email','$password','$confirm_password')";
+		if (mysqli_query($conn, $sql)) {
+			header("location:../../dashboard/dash_handle.php");
+
+			echo "New record created successfully !";
+		} else {
+			echo "Error: ".$sql."
+                         ".mysqli_error($conn);
+		}
+		mysqli_close($conn);
+	} else {
+		echo "Error";
+	}
+}
+
+?>
